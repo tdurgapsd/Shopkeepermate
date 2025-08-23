@@ -72,7 +72,10 @@ class _HomepageState extends State<Homepage> {
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.white
+            : Colors.black,
+
           ),
         ),
         actions: [

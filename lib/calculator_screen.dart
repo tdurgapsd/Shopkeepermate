@@ -11,12 +11,12 @@ class CalculatorScreen extends StatefulWidget {
 class _CalculatorScreenState extends State<CalculatorScreen> {
   final TextEditingController _controller = TextEditingController();
   String output = "0";
-  int plusCount = 0;
+  int plusCount = 1;
 
   bool _isOp(String s) => s == '+' || s == '-' || s == '*' || s == '/';
 
   void _buttonPressed(String value) {
-    if (value == "Back") {
+    if (value == "Del") {
       _handleBackspace();
       return;
     }
@@ -50,7 +50,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         return;
       }
 
-      // handle operators
       if (_isOp(value)) {
         if (_controller.text.isEmpty) return;
         final text = _controller.text;
@@ -67,7 +66,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         return;
       }
 
-      // digits
       _controller.text += value;
       _controller.selection = TextSelection.fromPosition(
         TextPosition(offset: _controller.text.length),
@@ -84,8 +82,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     final newText =
         text.substring(0, cursorPos - 1) + text.substring(cursorPos);
     _controller.text = newText;
-    _controller.selection =
-        TextSelection.fromPosition(TextPosition(offset: cursorPos - 1));
+    _controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: cursorPos - 1),
+    );
 
     setState(() {
       output = _controller.text.isEmpty ? "0" : _controller.text;
@@ -103,10 +102,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       final numStr = (i + 1 < tokens.length) ? tokens[i + 1] : "0";
       final num = double.parse(numStr);
       switch (op) {
-        case "+": result += num; break;
-        case "-": result -= num; break;
-        case "*": result *= num; break;
-        case "/": if (num == 0) return "Error"; result /= num; break;
+        case "+":
+          result += num;
+          break;
+        case "-":
+          result -= num;
+          break;
+        case "*":
+          result *= num;
+          break;
+        case "/":
+          if (num == 0) return "Error";
+          result /= num;
+          break;
       }
     }
     final s = result.toString();
@@ -114,51 +122,78 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   Widget _buildButton(String text, {Color? color}) => Expanded(
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-              backgroundColor: color ?? Colors.blueGrey,
-              padding: const EdgeInsets.all(20),
-            ),
-            onPressed: () => _buttonPressed(text),
-            child: Text(text, style: const TextStyle(fontSize: 22)),
+    child: Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14), // soft rounded buttons
           ),
+          backgroundColor: color ?? Colors.grey.shade200,
+          foregroundColor: Colors.black87,
+          padding: const EdgeInsets.symmetric(vertical: 22),
+          shadowColor: Colors.grey.withOpacity(0.3),
+          elevation: 3,
         ),
-      );
+        onPressed: () => _buttonPressed(text),
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+        ),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      appBar: AppBar(title: Text("Count: ${plusCount + 1}")),
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: Text("Count: $plusCount"),
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 1,
+      ),
       body: Column(
         children: [
-          // Input box with cursor
+          // Input
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: TextField(
               controller: _controller,
               style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
               textAlign: TextAlign.right,
-              decoration: const InputDecoration(border: OutlineInputBorder()),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
           ),
+          // Output
           Expanded(
             child: Container(
               alignment: Alignment.bottomRight,
               padding: const EdgeInsets.all(20),
-              child: Text(output,
-                  style: const TextStyle(
-                      fontSize: 40, fontWeight: FontWeight.bold)),
+              child: Text(
+                output,
+                style: const TextStyle(
+                  fontSize: 42,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
+          // Buttons
           Row(
             children: [
               _buildButton("7"),
               _buildButton("8"),
               _buildButton("9"),
-              _buildButton("/", color: Colors.orange),
+              _buildButton("/", color: Colors.orange.shade200),
             ],
           ),
           Row(
@@ -166,7 +201,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               _buildButton("4"),
               _buildButton("5"),
               _buildButton("6"),
-              _buildButton("*", color: Colors.orange),
+              _buildButton("*", color: Colors.orange.shade200),
             ],
           ),
           Row(
@@ -174,43 +209,54 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               _buildButton("1"),
               _buildButton("2"),
               _buildButton("3"),
-              _buildButton("-", color: Colors.orange),
+              _buildButton("-", color: Colors.orange.shade200),
             ],
           ),
           Row(
             children: [
               _buildButton("0"),
-              _buildButton("C", color: Colors.red),
-              _buildButton("=", color: Colors.green),
-              _buildButton("+", color: Colors.orange),
+              _buildButton("C", color: Colors.red.shade200),
+              _buildButton("=", color: Colors.green.shade200),
+              _buildButton("+", color: Colors.orange.shade200),
             ],
           ),
           Row(
             children: [
-              _buildButton("Del", color: Colors.deepPurple), // new backspace
+              _buildButton("Del", color: Colors.purple.shade200),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.all(6.0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                        padding: const EdgeInsets.all(20)),
+                      backgroundColor: Colors.blue.shade100,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 22),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
                     onPressed: () => Navigator.pushNamed(context, '/credit'),
-                    child:
-                        const Text("Credit", style: TextStyle(fontSize: 22)),
+                    child: const Text("Credit", style: TextStyle(fontSize: 22)),
                   ),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.all(6.0),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.all(20)),
+                      backgroundColor: Colors.teal.shade100,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(vertical: 22),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
                     onPressed: () => Navigator.pushNamed(context, '/instant'),
-                    child:
-                        const Text("Instant", style: TextStyle(fontSize: 22)),
+                    child: const Text(
+                      "Instant",
+                      style: TextStyle(fontSize: 22),
+                    ),
                   ),
                 ),
               ),
