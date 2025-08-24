@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shopkeepermate/splash_screen.dart';
 import 'home_screen.dart' as home; // <-- import home screen
 import 'calculator_screen.dart' as calc; // <-- import calculator screen
 import 'inventory_screen.dart' as inventory; // <-- import inventory screen
@@ -29,11 +30,11 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ShopkeeperMate',
+      //title: 'ShopkeeperMate',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: _themeMode,
-      home: Homepage(toggleTheme: _toggleTheme),
+      home: SplashScreen(toggleTheme: _toggleTheme),
     );
   }
 }
@@ -50,7 +51,7 @@ class _HomepageState extends State<Homepage> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
-    home.HomeScreen(), // Now using separate file
+    home.HomeScreen(toggleTheme: () {  },), // Now using separate file
     calc.CalculatorScreen(),
     inventory.InventoryScreen(),
     profile.ProfileScreen(),
