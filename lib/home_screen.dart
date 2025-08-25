@@ -31,11 +31,16 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            const Center(
+            Center(
               child: Text(
-                "Your smart partner to manage inventory, sales, and credits with ease.",
+                "Your smart partner to manage inventory, sales, credits, customer details and vendor details with ease.",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.black54),
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black,
+                ),
               ),
             ),
             const SizedBox(height: 30),

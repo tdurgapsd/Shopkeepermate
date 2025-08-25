@@ -83,9 +83,39 @@ class _HomepageState extends State<Homepage> {
           IconButton(
             icon: Icon(Icons.brightness_6),
             onPressed: widget.toggleTheme,
-          )
+          ),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == "profile") {
+                // Navigate to profile screen
+              } else if (value == "settings") {
+                // Navigate to settings screen
+              }
+            },
+            itemBuilder: (BuildContext context) {
+              return [
+                const PopupMenuItem(
+                  value: "profile",
+                  child: Text("Profile"),
+                ),
+                const PopupMenuItem(
+                  value: "settings",
+                  child: Text("Settings"),
+                ),
+                const PopupMenuItem(
+                  value: "logout",
+                  child: Text("Logout"),
+                ),
+                const PopupMenuItem(
+                  value: "Items",
+                  child: Text("Items"),
+                ),
+              ];
+            },
+          ),
         ],
       ),
+    
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
